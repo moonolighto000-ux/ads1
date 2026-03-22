@@ -50,3 +50,4 @@ No iterative loops (for, while) were used in code.
 * **Logic:** Uses the recursive formula GCD(a, b) = GCD(b, a \pmod{b}) until the remainder is zero.
 * **Screenshot:** ![Task 10](screenshots/task10.png)
 
+During this assignment, I focused on replacing iterative logic (loops) with recursive calls. For each task, I identified the base case to prevent infinite recursion and the recursive step to move toward that base case. This helped me better understand how the stack works in Java and how to solve complex problems by breaking them into smaller sub-problems.
