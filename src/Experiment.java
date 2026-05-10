@@ -1,42 +1,59 @@
-import java.util.Arrays;
+import java.util.Random;
 
 public class Experiment {
-    private Sorter sorter = new Sorter();
-    private Searcher searcher = new Searcher();
 
-    public long measureSortTime(int[] arr, String type) {
-        long startTime = System.nanoTime();
-        if (type.equals("basic")) {
-            sorter.basicSort(arr);
-        } else {
-            sorter.advancedSort(arr);
-        }
-        return System.nanoTime() - startTime;
-    }
-
-    public long measureSearchTime(int[] arr, int target) {
-        long startTime = System.nanoTime();
-        searcher.search(arr, target);
-        return System.nanoTime() - startTime;
-    }
-
-    public void runAllExperiments() {
-        int[] sizes = {10, 100, 1000};
+    public void runMultipleTests() {
+        int[] sizes = {10, 30, 100};
 
         for (int size : sizes) {
-            System.out.println("\n--- Testing Array Size: " + size + " ---");
-            int[] data = sorter.generateRandomArray(size);
+            System.out.println("--- Testing Graph with " + size + " vertices ---");
+            Graph g = createRandomGraph(size);
 
-            int[] bubbleData = Arrays.copyOf(data, data.length);
-            long bTime = measureSortTime(bubbleData, "basic");
-            System.out.println("Bubble Sort Time: " + bTime + " ns");
+            if (size == 10) {
+                g.printGraph();
+            }
 
-            int[] mergeData = Arrays.copyOf(data, data.length);
-            long mTime = measureSortTime(mergeData, "advanced");
-            System.out.println("Merge Sort Time: " + mTime + " ns");
-
-            long sTime = measureSearchTime(data, -1);
-            System.out.println("Linear Search Time: " + sTime + " ns");
+            runTraversals(g);
+            System.out.println();
         }
+    }
+
+    public void runTraversals(Graph g) {
+        int startNode = 0;
+
+        long startTimeBfs = System.nanoTime();
+        g.bfs(startNode);
+        long endTimeBfs = System.nanoTime();
+        long durationBfs = endTimeBfs - startTimeBfs;
+
+        long startTimeDfs = System.nanoTime();
+        g.dfs(startNode);
+        long endTimeDfs = System.nanoTime();
+        long durationDfs = endTimeDfs - startTimeDfs;
+
+        printResults(durationBfs, durationDfs);
+    }
+
+    private Graph createRandomGraph(int vertices) {
+        Graph g = new Graph();
+        Random random = new Random();
+
+        for (int i = 0; i < vertices; i++) {
+            g.addVertex(new Vertex(i));
+        }
+
+        for (int i = 0; i < vertices * 2; i++) {
+            int from = random.nextInt(vertices);
+            int to = random.nextInt(vertices);
+            if (from != to) {
+                g.addEdge(from, to);
+            }
+        }
+        return g;
+    }
+
+    public void printResults(long bfsTime, long dfsTime) {
+        System.out.println("BFS Execution Time: " + bfsTime + " ns");
+        System.out.println("DFS Execution Time: " + dfsTime + " ns");
     }
 }
